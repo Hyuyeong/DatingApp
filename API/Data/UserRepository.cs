@@ -1,4 +1,5 @@
 using System;
+using System.Security.Claims;
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
@@ -28,6 +29,11 @@ public class UserRepository(DataContext context, IMapper mapper) : IUserReposito
     public async Task<AppUser?> GetUserByUsernameAsync(string username)
     {
         return await context.Users.Include(x=>x.Photos).SingleOrDefaultAsync(x => x.UserName == username);
+    }
+
+    public Task GetUserByUsernameAsync(Claim username)
+    {
+        throw new NotImplementedException();
     }
 
     public async Task<IEnumerable<AppUser>> GetUsersAsync()
