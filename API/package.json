@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@angular/cdk": "^18.2.12",
+    "ng-gallery": "^12.0.0",
+    "node": "^18.20.5"
+  }
+}
