@@ -12,6 +12,10 @@ import { Photo } from '../_ㅡmodles/Photo';
 import { PaginatedResult } from '../_ㅡmodles/pagination';
 import { UserParams } from '../_ㅡmodles/userParams';
 import { AccountService } from './account.service';
+import {
+  setPaginatedResponse,
+  setPaginationHeaders,
+} from './paginationHelpers';
 
 @Injectable({
   providedIn: 'root',
@@ -36,9 +40,9 @@ export class MembersService {
       Object.values(this.userParams()).join('-')
     );
 
-    if (response) return this.setPaginatedResponse(response);
+    if (response) return setPaginatedResponse(response, this.paginatedResult);
 
-    let params = this.setPaginationHeaders(
+    let params = setPaginationHeaders(
       this.userParams().pageNumber,
       this.userParams().pageSize
     );
@@ -52,28 +56,28 @@ export class MembersService {
       .get<Member[]>(this.baseUrl + 'users', { observe: 'response', params })
       .subscribe({
         next: (response) => {
-          this.setPaginatedResponse(response);
+          setPaginatedResponse(response, this.paginatedResult);
           this.memberCache.set(Object.values(UserParams).join('-'), response);
         },
       });
   }
 
-  private setPaginationHeaders(pageNumber: number, pageSize: number) {
-    let params = new HttpParams();
+  // private setPaginationHeaders(pageNumber: number, pageSize: number) {
+  //   let params = new HttpParams();
 
-    if (pageNumber && pageSize) {
-      params = params.append('pageNumber', pageNumber);
-      params = params.append('pageSize', pageSize);
-    }
-    return params;
-  }
+  //   if (pageNumber && pageSize) {
+  //     params = params.append('pageNumber', pageNumber);
+  //     params = params.append('pageSize', pageSize);
+  //   }
+  //   return params;
+  // }
 
-  private setPaginatedResponse(response: HttpResponse<Member[]>) {
-    this.paginatedResult.set({
-      items: response.body as Member[],
-      pagination: JSON.parse(response.headers.get('Pagination')!),
-    });
-  }
+  // private setPaginatedResponse(response: HttpResponse<Member[]>) {
+  //   this.paginatedResult.set({
+  //     items: response.body as Member[],
+  //     pagination: JSON.parse(response.headers.get('Pagination')!),
+  //   });
+  // }
 
   getMember(username: string) {
     // const member = this.members().find((x) => x.username === username);
